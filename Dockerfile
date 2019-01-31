@@ -1,4 +1,4 @@
-#FROM daggerok/jboss-eap-7.2:7.2.0-centos
+#FROM daggerok/jboss-eap-7.2:7.2.0-alpine
 #LABEL MAINTAINER='Maksim Kostromin <daggerok@gmail.com>'
 #ENV PRODUCT='jboss-eap-7.2' \
 #    JBOSS_USER='jboss'
@@ -9,21 +9,20 @@
 #    PATCHES_BASE_URL="${DOWNLOAD_BASE_URL}/${JBOSS_EAP_PATCH}"
 #ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"
 #USER ${JBOSS_USER}
-#RUN sudo yum update --security -y \
-# && sudo yum update -y
+#RUN ( sudo apk fix --no-cache || echo 'cannot fix.' ) \
+# && ( sudo apk upgrade --no-cache || echo 'cannot upgrade.' )
 #WORKDIR /tmp
 #ADD --chown=jboss ./install.sh .
 #RUN ( standalone.sh --admin-only \
 #      & ( sudo chmod +x /tmp/install.sh \
 #          && install.sh \
-#          && sudo yum autoremove -y \
-#          && sudo yum clean all -y \
-#          && sudo rm -rf /tmp/*  ) )
+#          && ( sudo apk cache -v clean || echo 'cannot clean cache.' ) \
+#          && sudo rm -rf /tmp/* ) )
 #WORKDIR ${JBOSS_USER_HOME}
 
 ############################################### USAGE ##################################################
 #                                                                                                      #
-# FROM daggerok/jboss-eap-7.2:7.2.0-centos                                                             #
+# FROM daggerok/jboss-eap-7.2:7.2.0-alpine                                                             #
 #                                                                                                      #
 # # debug:                                                                                             #
 # ENV JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"        #
@@ -45,27 +44,28 @@
 #                                                                                                      #
 ########################################################################################################
 
-FROM centos:centos7.6.1810
+FROM openjdk:8u191-jdk-alpine3.8
 LABEL MAINTAINER='Maksim Kostromin <daggerok@gmail.com>'
 ENV PRODUCT='jboss-eap-7.2'                                                                            \
     JBOSS_USER='jboss'
 ENV ADMIN_USER='admin'                                                                                 \
     ADMIN_PASSWORD='Admin.123'                                                                         \
-    JDK_VERSION='jdk1.8.0_191'                                                                         \
     JBOSS_USER_HOME="/home/${JBOSS_USER}"                                                              \
     DOWNLOAD_BASE_URL="https://github.com/daggerok/${PRODUCT}/releases/download"                       \
     JBOSS_EAP_PATCH='7.2.0'
 ENV JBOSS_HOME="${JBOSS_USER_HOME}/${PRODUCT}"                                                         \
     ARCHIVES_BASE_URL="${DOWNLOAD_BASE_URL}/archives"                                                  \
     PATCHES_BASE_URL="${DOWNLOAD_BASE_URL}/${JBOSS_EAP_PATCH}"
-ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"                                                              \
-    JAVA_HOME="/usr/lib/jvm/${JDK_VERSION}"
+ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"
 USER root
-RUN yum update -y                                                                                   && \
-    yum update --security -y                                                                        && \
-    yum install -y wget ca-certificates unzip sudo openssh-client unzip zip net-tools               && \
+RUN ( apk fix     --no-cache || echo 'cannot fix.'         )                                        && \
+    ( apk upgrade --no-cache || echo 'cannot upgrade.'     )                                        && \
+    ( apk cache   -v   clean || echo 'cannot clean cache.' )                                        && \
+      apk add     --no-cache --update --upgrade                                                        \
+                  busybox-suid bash wget ca-certificates unzip sudo openssh-client shadow           && \
     echo "${JBOSS_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers                                    && \
-    adduser -U -m -d /home/jboss -s /bin/bash jboss                                                 && \
+    sed -i 's/.*requiretty$/Defaults !requiretty/' /etc/sudoers                                     && \
+    adduser -h ${JBOSS_USER_HOME} -s /bin/bash -D ${JBOSS_USER} ${JBOSS_USER}                       && \
     usermod -a -G ${JBOSS_USER} ${JBOSS_USER}
 USER ${JBOSS_USER}
 CMD /bin/bash
@@ -73,15 +73,11 @@ ENTRYPOINT standalone.sh
 EXPOSE 8080 8443 9990
 WORKDIR /tmp
 ADD --chown=jboss ./install.sh .
-RUN wget ${ARCHIVES_BASE_URL}/${JDK_VERSION}.tar.gz                                                    \
-         -q --no-cookies --no-check-certificate -O /tmp/${JDK_VERSION}.tar.gz                       && \
-    sudo mkdir -p /usr/lib/jvm                                                                      && \
-    sudo tar xzfz /tmp/${JDK_VERSION}.tar.gz -C /usr/lib/jvm/                                       && \
-    wget ${ARCHIVES_BASE_URL}/jce_policy-8.zip                                                         \
+RUN wget ${ARCHIVES_BASE_URL}/jce_policy-8.zip                                                         \
          -q --no-cookies --no-check-certificate -O /tmp/jce_policy-8.zip                            && \
     unzip -q /tmp/jce_policy-8.zip -d /tmp                                                          && \
     ( sudo mv -f ${JAVA_HOME}/lib/security ${JAVA_HOME}/lib/backup-security || echo 'no backups.' ) && \
-    sudo mv -f /tmp/UnlimitedJCEPolicyJDK8 ${JAVA_HOME}/lib/security                                && \
+    ( sudo mv -f /tmp/UnlimitedJCEPolicyJDK8 ${JAVA_HOME}/lib/security      || echo 'oops...'     ) && \
     wget ${ARCHIVES_BASE_URL}/jboss-eap-7.2.0.zip                                                      \
          -q --no-cookies --no-check-certificate -O /tmp/jboss-eap-7.2.0.zip                         && \
     unzip -q /tmp/jboss-eap-7.2.0.zip -d ${JBOSS_USER_HOME}                                         && \
@@ -91,8 +87,6 @@ RUN wget ${ARCHIVES_BASE_URL}/${JDK_VERSION}.tar.gz                             
     ( standalone.sh --admin-only                                                                       \
       & ( sudo chmod +x /tmp/install.sh                                                             && \
           install.sh                                                                                && \
-          rm -rf /tmp/install.sh                                                                    && \
-          sudo yum autoremove -y                                                                    && \
-          sudo yum clean all -y                                                                     && \
-          ( sudo rm -rf /tmp/* /var/cache/yum || echo 'something was not removed...' ) ) )
+          sudo apk del --no-cache --no-network --purge busybox-suid unzip openssh-client shadow     && \
+          ( sudo rm -rf /tmp/* /var/cache/apk /var/lib/apk /etc/apk/cache || echo 'cleanup!' ) ) )
 WORKDIR ${JBOSS_USER_HOME}
