@@ -28,27 +28,27 @@ ENTRYPOINT ["/bin/ash", "-c"]
 CMD ["${JBOSS_HOME}/bin/standalone.s -b 0.0.0.0"]
 WORKDIR /tmp
 ADD --chown=jboss ./install.sh .
-RUN wget ${ARCHIVES_BASE_URL}/${JDK_VERSION}.tar.gz                                                                        \
-         -q --no-cookies --no-check-certificate -O /tmp/${JDK_VERSION}.tar.gz                                           && \
-    sudo mkdir -p /usr/lib/jvm                                                                                          && \
-    sudo tar xzfz /tmp/${JDK_VERSION}.tar.gz -C /usr/lib/jvm/                                                           && \
-    wget ${ARCHIVES_BASE_URL}/jce_policy-8.zip                                                                             \
-         -q --no-cookies --no-check-certificate -O /tmp/jce_policy-8.zip                                                && \
-    unzip -q /tmp/jce_policy-8.zip -d /tmp                                                                              && \
-    ( sudo mv -f ${JAVA_HOME}/lib/security ${JAVA_HOME}/lib/backup-security || echo 'no backups.' )                     && \
-    sudo mv -f /tmp/UnlimitedJCEPolicyJDK8 ${JAVA_HOME}/lib/security                                                    && \
-    wget ${ARCHIVES_BASE_URL}/jboss-eap-7.2.0.zip                                                                          \
-         -q --no-cookies --no-check-certificate -O /tmp/jboss-eap-7.2.0.zip                                             && \
-    unzip -q /tmp/jboss-eap-7.2.0.zip -d ${JBOSS_USER_HOME}                                                             && \
-    add-user.sh ${ADMIN_USER} ${ADMIN_PASSWORD} --silent                                                                && \
-    echo 'JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0" \
-         ' >> ${JBOSS_HOME}/bin/standalone.conf                                                                         && \
-    ( standalone.sh --admin-only                                                                                           \
-      & ( sudo chmod +x /tmp/install.sh                                                                                 && \
-          install.sh                                                                                                    && \
-          rm -rf /tmp/install.sh                                                                                        && \
-          sudo yum autoremove -y                                                                                        && \
-          sudo yum clean all -y                                                                                         && \
+RUN wget ${ARCHIVES_BASE_URL}/${JDK_VERSION}.tar.gz                                                                                                \
+         -q --no-cookies --no-check-certificate -O /tmp/${JDK_VERSION}.tar.gz                                                                   && \
+    sudo mkdir -p /usr/lib/jvm                                                                                                                  && \
+    sudo tar xzfz /tmp/${JDK_VERSION}.tar.gz -C /usr/lib/jvm/                                                                                   && \
+    wget ${ARCHIVES_BASE_URL}/jce_policy-8.zip                                                                                                     \
+         -q --no-cookies --no-check-certificate -O /tmp/jce_policy-8.zip                                                                        && \
+    unzip -q /tmp/jce_policy-8.zip -d /tmp                                                                                                      && \
+    ( sudo mv -f ${JAVA_HOME}/lib/security ${JAVA_HOME}/lib/backup-security || echo 'no backups.' )                                             && \
+    sudo mv -f /tmp/UnlimitedJCEPolicyJDK8 ${JAVA_HOME}/lib/security                                                                            && \
+    wget ${ARCHIVES_BASE_URL}/jboss-eap-7.2.0.zip                                                                                                  \
+         -q --no-cookies --no-check-certificate -O /tmp/jboss-eap-7.2.0.zip                                                                     && \
+    unzip -q /tmp/jboss-eap-7.2.0.zip -d ${JBOSS_USER_HOME}                                                                                     && \
+    add-user.sh ${ADMIN_USER} ${ADMIN_PASSWORD} --silent                                                                                        && \
+    echo 'JAVA_OPTS="-Djava.io.tmpdir=/tmp -Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0"   \
+         ' >> ${JBOSS_HOME}/bin/standalone.conf                                                                                                 && \
+    ( standalone.sh --admin-only                                                                                                                   \
+      & ( sudo chmod +x /tmp/install.sh                                                                                                         && \
+          install.sh                                                                                                                            && \
+          rm -rf /tmp/install.sh                                                                                                                && \
+          sudo yum autoremove -y                                                                                                                && \
+          sudo yum clean all -y                                                                                                                 && \
           ( sudo rm -rf /tmp/* /var/cache/yum || echo 'something was not removed...' ) ) )
 WORKDIR ${JBOSS_USER_HOME}
 

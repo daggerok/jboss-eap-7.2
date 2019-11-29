@@ -12,7 +12,7 @@ if [ "${JBOSS_EAP_PATCH}" != '7.2.0' ] ; then
   wget -q -i "${PATCHES_BASE_URL}/index.txt" -P ./patches/ || echo 'no patches found.'
 
   for PATCH_FILENAME in $(ls ./patches/*.zip) ; do
-    echo "Applying $(basename ${PATCH_FILENAME}) file..."
+    echo "Applying $(basename ./patches/${PATCH_FILENAME}) file..."
     INSTRUCTIONS_FILE="${PATCH_FILENAME}.instructions"
     ##modification problem solving:
     #if [[ ${PATCH_FILENAME} == *-7.2.5-patch.zip ]] ; then
