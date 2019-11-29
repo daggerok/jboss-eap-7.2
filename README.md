@@ -24,16 +24,18 @@ COPY --chown=jboss ./target/*.war ${JBOSS_HOME}/standalone/deployments/my-servic
 
 ```Dockerfile
 FROM daggerok/jboss-eap-7.2:7.2.5-alpine
-HEALTHCHECK --timeout=1s --retries=99 \
-        CMD wget -q --spider http://127.0.0.1:8080/my-service/health \
-         || exit 1
+HEALTHCHECK --retries=33 \
+            --timeout=1s \
+            --interval=1s \
+            --start-period=3s \
+            CMD wget -q --spider http://127.0.0.1:8080/my-service/health || exit 1
 # ...
 ```
 
 ## multi deployment
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.0-centos
+FROM daggerok/jboss-eap-7.2:7.2.5-centos
 # ...
 COPY ./build/libs/*.war ./target/*.war ${JBOSS_HOME}/standalone/deployments/
 ```
@@ -41,7 +43,7 @@ COPY ./build/libs/*.war ./target/*.war ${JBOSS_HOME}/standalone/deployments/
 ## remote debug
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.0-alpine
+FROM daggerok/jboss-eap-7.2:7.2.5-alpine
 ENV JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
 EXPOSE 5005
 # ...
