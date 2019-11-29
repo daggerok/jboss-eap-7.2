@@ -14,17 +14,16 @@ if [ "${JBOSS_EAP_PATCH}" != '7.2.0' ] ; then
   for PATCH_FILENAME in $(ls ./patches/*.zip) ; do
     echo "Applying $(basename ${PATCH_FILENAME}) file..."
     INSTRUCTIONS_FILE="${PATCH_FILENAME}.instructions"
-
-    if [[ ${PATCH_FILENAME} == *-7.2.5-patch.zip ]] ; then
-      echo "connect
-            patch apply ${PATCH_FILENAME} --override=bin/standalone.conf,bin/standalone.conf.bat
-            shutdown --restart=true" > ${INSTRUCTIONS_FILE}
-    else
+    ##modification problem solving:
+    #if [[ ${PATCH_FILENAME} == *-7.2.5-patch.zip ]] ; then
+    #  echo "connect
+    #        patch apply ${PATCH_FILENAME} --override=bin/standalone.conf,bin/standalone.conf.bat
+    #        shutdown --restart=true" > ${INSTRUCTIONS_FILE}
+    #else
       echo "connect
             patch apply ${PATCH_FILENAME}
             shutdown --restart=true" > ${INSTRUCTIONS_FILE}
-    fi
-
+    #fi
     jboss-cli.sh --file=${INSTRUCTIONS_FILE}
     rm -rf ${INSTRUCTIONS_FILE} ${PATCH_FILENAME}
     waiting_for_jboss
