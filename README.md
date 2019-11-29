@@ -59,17 +59,19 @@ EXPOSE 5005
 - password: `Admin.123`
 
 <!--
+
 release workflow history:
 
-git tag 7.2.5-alpine
-git push origin --tags --force
-
-git tag 7.2.5-centos
+git tag 7.2.0-centos
 git push origin --tags --force
 
 git tag 7.2.0-alpine
 git push origin --tags --force
 
-git tag 7.2.0-centos
+git tag 7.2.5-centos
 git push origin --tags --force
+
+git tag 7.2.5-alpine
+git push origin --tags --force
+
 -->
