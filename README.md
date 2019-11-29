@@ -62,6 +62,9 @@ EXPOSE 5005
 
 <!--
 
+git reset --hard origin/master
+git fetch -p -a --prune-tags --force --tags 
+
 git tag -d $tagName
 git push --delete origin $tagName
 
