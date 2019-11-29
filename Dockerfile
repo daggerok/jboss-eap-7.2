@@ -23,7 +23,7 @@ RUN yum update --security -y -q                                                 
 USER ${JBOSS_USER}
 EXPOSE 8080 8443 9990
 ENTRYPOINT ["/bin/ash", "-c"]
-CMD ["${JBOSS_HOME}/bin/standalone.s -b 0.0.0.0"]
+CMD ["${JBOSS_HOME}/bin/standalone.sh -b 0.0.0.0"]
 WORKDIR /tmp
 ADD --chown=jboss ./install.sh .
 RUN wget ${ARCHIVES_BASE_URL}/jboss-eap-7.2.0.zip                                                                                                  \
