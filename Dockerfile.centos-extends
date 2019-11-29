@@ -1,10 +1,10 @@
 FROM daggerok/jboss-eap-7.2:7.2.5-centos
-LABEL MAINTAINER='Maksim Kostromin <daggerok@gmail.com>'
-ENV PRODUCT='jboss-eap-7.2' \
-    JBOSS_USER='jboss'
+LABEL MAINTAINER="Maksim Kostromin <daggerok@gmail.com>"
+ENV PRODUCT="jboss-eap-7.2" \
+    JBOSS_USER="jboss"
 ENV JBOSS_USER_HOME="/home/${JBOSS_USER}" \
     DOWNLOAD_BASE_URL="https://github.com/daggerok/${PRODUCT}/releases/download" \
-    JBOSS_EAP_PATCH='7.2.6'
+    JBOSS_EAP_PATCH="7.2.6"
 ENV JBOSS_HOME="${JBOSS_USER_HOME}/${PRODUCT}" \
     PATCHES_BASE_URL="${DOWNLOAD_BASE_URL}/${JBOSS_EAP_PATCH}"
 ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"
