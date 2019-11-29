@@ -54,7 +54,7 @@ WORKDIR ${JBOSS_USER_HOME}
 
 ############################################### USAGE ##################################################
 #                                                                                                      #
-# FROM daggerok/jboss-eap-7.2:7.2.0-centos                                                             #
+# FROM daggerok/jboss-eap-7.2:7.2.5-centos                                                             #
 #                                                                                                      #
 # # debug:                                                                                             #
 # ENV JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"        #
