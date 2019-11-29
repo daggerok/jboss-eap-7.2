@@ -30,12 +30,16 @@
 # EXPOSE 5005                                                                                          #
 #                                                                                                      #
 # # health-check:                                                                                      #
-# HEALTHCHECK --timeout=1s \                                                                           #
-#             --retries=33 \                                                                           #
+# HEALTHCHECK --retries=33 \                                                                           #
+#             --timeout=1s \                                                                           #
+#             --interval=1s \                                                                          #
+#             --start-period=3s \                                                                      #
 #             CMD test `netstat -ltnp | grep 9990 | wc -l` -ge 1 || exit 1                             #
 # # or:                                                                                                #
-# HEALTHCHECK --timeout=1s \                                                                           #
-#             --retries=33 \                                                                           #
+# HEALTHCHECK --retries=33 \                                                                           #
+#             --timeout=1s \                                                                           #
+#             --interval=1s \                                                                          #
+#             --start-period=3s \                                                                      #
 #             CMD wget -q --spider http://127.0.0.1:8080/my-service/health || exit 1                   #
 #                                                                                                      #
 # COPY --chown=jboss ./target/*.war ${JBOSS_HOME}/standalone/deployments/my-service.war                #
