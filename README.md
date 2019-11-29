@@ -56,6 +56,8 @@ EXPOSE 5005
 - password: `Admin.123`
 
 <!--
+release workflow:
+
 git tag 7.2.0-centos
 git push origin --tags --force
 -->
