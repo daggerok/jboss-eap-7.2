@@ -68,7 +68,7 @@ ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"                                       
 USER root
 RUN yum update -y -q                                                                                    && \
     yum update --security -y -q                                                                         && \
-    yum install -y -q                                                                                   && \
+    yum install -y -q                                                                                      \
             wget ca-certificates unzip sudo openssh-clients zip net-tools curl                          && \
     echo "${JBOSS_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers                                        && \
     groupadd --system --gid 1001 ${JBOSS_USER}                                                          && \
