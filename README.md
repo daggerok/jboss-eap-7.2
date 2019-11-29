@@ -1,5 +1,5 @@
 # jboss-eap-7.2 [![Build Status](https://travis-ci.org/daggerok/jboss-eap-7.2.svg?branch=master)](https://travis-ci.org/daggerok/jboss-eap-7.2)
-Patched JBoss EAP 7.2 (including __7.2.0 patch__) Docker automation build based on centos8 / alpine3.9 images
+Patched JBoss EAP 7.2 (including __7.2.5 patch__) Docker automation build based on centos8 / alpine3.9 images
 
 [daggerok/jboss-eap-7.2](https://hub.docker.com/r/daggerok/jboss-eap-7.2/)
 
@@ -7,20 +7,23 @@ Patched JBoss EAP 7.2 (including __7.2.0 patch__) Docker automation build based 
 
 - [latest](https://github.com/daggerok/jboss-eap-7.2/blob/master/Dockerfile)
 
+- [7.2.5-alpine](https://github.com/daggerok/jboss-eap-7.2/blob/7.2.5-alpine/Dockerfile)
+- [7.2.5-centos](https://github.com/daggerok/jboss-eap-7.2/blob/7.2.5-centos/Dockerfile)
+
 - [7.2.0-alpine](https://github.com/daggerok/jboss-eap-7.2/blob/7.2.0-alpine/Dockerfile)
 - [7.2.0-centos](https://github.com/daggerok/jboss-eap-7.2/blob/7.2.0-centos/Dockerfile)
 
 ## usage
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.0-alpine
+FROM daggerok/jboss-eap-7.2:7.2.5-alpine
 COPY --chown=jboss ./target/*.war ${JBOSS_HOME}/standalone/deployments/my-service.war
 ```
 
 ## health check
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.0-alpine
+FROM daggerok/jboss-eap-7.2:7.2.5-alpine
 HEALTHCHECK --timeout=1s --retries=99 \
         CMD wget -q --spider http://127.0.0.1:8080/my-service/health \
          || exit 1
