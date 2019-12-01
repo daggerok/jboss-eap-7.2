@@ -37,7 +37,7 @@ HEALTHCHECK --retries=33 \
 ```Dockerfile
 FROM daggerok/jboss-eap-7.2:7.2.5-centos
 # ...
-COPY ./build/libs/*.war ./target/*.war ${JBOSS_HOME}/standalone/deployments/
+COPY --chown=jboss ./build/libs/*.war ./target/*.war ${JBOSS_HOME}/standalone/deployments/
 ```
 
 ## remote debug
