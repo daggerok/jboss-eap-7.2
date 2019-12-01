@@ -23,7 +23,7 @@ COPY --chown=jboss ./target/*.war ${JBOSS_HOME}/standalone/deployments/my-servic
 ## health check
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.5-alpine
+FROM daggerok/jboss-eap-7.2:7.2.5-centos
 HEALTHCHECK --retries=33 \
             --timeout=1s \
             --interval=1s \
