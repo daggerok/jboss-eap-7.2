@@ -6,7 +6,7 @@ function waiting_for_jboss {
 
 waiting_for_jboss
 
-if [ "${JBOSS_EAP_PATCH}" != "7.2.0" ] ; then
+if [[ "${JBOSS_EAP_PATCH}" != "7.2.0" ]] ; then
 
   mkdir -p ./patches
   wget -q -i "${PATCHES_BASE_URL}/index.txt" -P ./patches/ || echo "no patches found."
@@ -30,7 +30,7 @@ if [ "${JBOSS_EAP_PATCH}" != "7.2.0" ] ; then
   done
 fi
 
-if [ -z ${KEEP_HISTORY} ] || [[ ! ${KEEP_HISTORY} =~ ^(keep|yes|true)$ ]] ; then
+if [[ -z ${KEEP_HISTORY} ]] || [[ ! ${KEEP_HISTORY} =~ ^(keep|yes|true)$ ]] ; then
   echo "Cleanup history..."
   jboss-cli.sh --commands="connect","/core-service=patching:ageout-history"
 fi
@@ -38,7 +38,7 @@ fi
 echo "Shutdown JBoss..."
 jboss-cli.sh --commands="connect","shutdown --restart=false"
 
-if [ -z ${KEEP_HISTORY} ] || [[ ! ${KEEP_HISTORY} =~ ^(keep|yes|true)$ ]] ; then
+if [[ -z ${KEEP_HISTORY} ]] || [[ ! ${KEEP_HISTORY} =~ ^(keep|yes|true)$ ]] ; then
   echo "Cleanup tmp, data, logs..."
   for FOLDER in "tmp" "data" "log" ; do
     sudo rm -rf ${JBOSS_HOME}/standalone/${FOLDER}

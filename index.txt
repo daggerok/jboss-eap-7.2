@@ -1,0 +1,3 @@
+jboss-eap-7.2.6-patch.zip
+jboss-eap-7.2.7-patch.zip
+jboss-eap-7.2.71-jbeap-19005.zip
