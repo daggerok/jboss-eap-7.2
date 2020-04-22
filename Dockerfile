@@ -1,4 +1,4 @@
-FROM daggerok/jboss-eap-7.2:7.2.5-centos
+FROM daggerok/jboss-eap-7.2:7.2.5-alpine
 LABEL MAINTAINER="Maksim Kostromin <daggerok@gmail.com>"
 ENV PRODUCT="jboss-eap-7.2"                                                                     \
     JBOSS_USER="jboss"
@@ -8,24 +8,22 @@ ENV JBOSS_USER_HOME="/home/${JBOSS_USER}"                                       
 ENV JBOSS_HOME="${JBOSS_USER_HOME}/${PRODUCT}"                                                  \
     PATCHES_BASE_URL="${DOWNLOAD_BASE_URL}/${JBOSS_EAP_PATCH}"
 ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"                                                       \
-    JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk"                                                 \
     JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0"
 USER ${JBOSS_USER}
-RUN sudo yum update --security -y                                                               \
- && sudo yum update -y
+RUN ( sudo apk fix --no-cache || echo "cannot fix." )                                           \
+ && ( sudo apk upgrade --no-cache || echo "cannot upgrade." )
 WORKDIR /tmp
 ADD --chown=jboss ./install.sh .
 RUN ( standalone.sh --admin-only                                                                \
       & ( sudo chmod +x /tmp/install.sh                                                         \
           && install.sh                                                                         \
-          && sudo yum autoremove -y                                                             \
-          && sudo yum clean all -y                                                              \
-          && sudo rm -rf /tmp/*  ) )
+          && ( sudo apk cache -v clean || echo "cannot clean cache." )                          \
+          && sudo rm -rf /tmp/* ) )
 WORKDIR ${JBOSS_USER_HOME}
 
 ############################################ USAGE ##############################################
 #                                                                                               #
-# FROM daggerok/jboss-eap-7.2:7.2.71-centos                                                     #
+# FROM daggerok/jboss-eap-7.2:7.2.71-alpine                                                     #
 #                                                                                               #
 # # debug:                                                                                      #
 # ENV JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" #
