@@ -11,7 +11,7 @@ ENV JBOSS_HOME="${JBOSS_USER_HOME}/${PRODUCT}"                                  
     ARCHIVES_BASE_URL="${DOWNLOAD_BASE_URL}/archives"                                               \
     PATCHES_BASE_URL="${DOWNLOAD_BASE_URL}/${JBOSS_EAP_PATCH}"
 ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"                                                           \
-    JAVA_OPTS="-Djava.io.tmpdir=/tmp -Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0"
+    JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0"
 USER root
 RUN ( apk fix     --no-cache || echo "cannot fix."         )                                     && \
     ( apk upgrade --no-cache || echo "cannot upgrade."     )                                     && \
@@ -33,8 +33,6 @@ RUN wget ${ARCHIVES_BASE_URL}/jboss-eap-7.2.0.zip                               
           -q --no-cookies --no-check-certificate -O /tmp/jboss-eap-7.2.0.zip                     && \
     unzip -q /tmp/jboss-eap-7.2.0.zip -d ${JBOSS_USER_HOME}                                      && \
     add-user.sh ${ADMIN_USER} ${ADMIN_PASSWORD} --silent                                         && \
-    echo 'JAVA_OPTS="-Djava.io.tmpdir=/tmp -Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0"   \
-         ' >> ${JBOSS_HOME}/bin/standalone.conf                                                  && \
     ( standalone.sh --admin-only                                                                    \
       & ( sudo chmod +x /tmp/install.sh                                                          && \
           install.sh                                                                             && \

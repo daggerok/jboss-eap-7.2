@@ -19,14 +19,14 @@ Patched JBoss EAP 7.2 (including __7.2.7-1 patch__) Docker automation build base
 ## usage
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.5-alpine
+FROM daggerok/jboss-eap-7.2:7.2.71-alpine
 COPY --chown=jboss ./target/*.war ${JBOSS_HOME}/standalone/deployments/my-service.war
 ```
 
 ## health check
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.5-centos
+FROM daggerok/jboss-eap-7.2:7.2.71-centos
 HEALTHCHECK --retries=33 \
             --timeout=1s \
             --interval=1s \
@@ -38,7 +38,7 @@ HEALTHCHECK --retries=33 \
 ## multi deployment
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.5-centos
+FROM daggerok/jboss-eap-7.2:7.2.71-centos
 # ...
 COPY --chown=jboss ./build/libs/*.war ./target/*.war ${JBOSS_HOME}/standalone/deployments/
 ```
@@ -46,7 +46,7 @@ COPY --chown=jboss ./build/libs/*.war ./target/*.war ${JBOSS_HOME}/standalone/de
 ## remote debug
 
 ```Dockerfile
-FROM daggerok/jboss-eap-7.2:7.2.5-alpine
+FROM daggerok/jboss-eap-7.2:7.2.71-alpine
 ENV JAVA_OPTS="$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
 EXPOSE 5005
 # ...
@@ -73,16 +73,10 @@ git push --delete origin $tagName
 
 release workflow history:
 
-git tag 7.2.0-centos
-git push origin --tags --force
-
-git tag 7.2.0-alpine
-git push origin --tags --force
-
-git tag 7.2.5-centos
+git tag 7.2.71-centos
 git push origin --tags
 
-git tag 7.2.5-alpine
+git tag 7.2.71-alpine
 git push origin --tags
 
 -->

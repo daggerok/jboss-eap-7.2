@@ -9,7 +9,7 @@ ENV JBOSS_HOME="${JBOSS_USER_HOME}/${PRODUCT}"                                  
     PATCHES_BASE_URL="${DOWNLOAD_BASE_URL}/${JBOSS_EAP_PATCH}"
 ENV PATH="${JBOSS_HOME}/bin:/tmp:${PATH}"                                                       \
     JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk"                                                 \
-    JAVA_OPTS="-Djava.io.tmpdir=/tmp -Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0"
+    JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djboss.bind.address=0.0.0.0 -Djboss.bind.address.management=0.0.0.0"
 USER ${JBOSS_USER}
 RUN sudo yum update --security -y                                                               \
  && sudo yum update -y
